@@ -22,7 +22,7 @@ let livesFont = '16px Arial';
 
 //移動速度
 let dx = 2;
-let dy = -10;
+let dy = -2;
 
 //キー操作
 let rightPressed = false;
