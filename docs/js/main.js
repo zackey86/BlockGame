@@ -190,7 +190,7 @@ function collisionDetection() {
                         b.status = 0;
                         score++;
 
-                        score = brickColumnCount * brickRowCount * gameLevel;
+                        //score = brickColumnCount * brickRowCount * gameLevel;
 
                         if (score == brickColumnCount * brickRowCount * gameLevel) {
 
