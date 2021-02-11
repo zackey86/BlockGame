@@ -141,8 +141,10 @@ function drawPaddle() {
 
 //ブロックの描画
 function drawBricks() {
+
     for (let c = 0; c < brickColumnCount; c++) {
         for (let r = 0; r < brickRowCount; r++) {
+
             let brick = bricks[c][r];
             if (brick.status == 1) {
 
@@ -173,11 +175,11 @@ function collisionDetection() {
 
                 //ボールのx座標がブロックのx座標より大きい
                 //ボールのx座業がブロックのx座業とその幅の和より小さい
-                if ((x + ballRadius) > b.x && (x + ballRadius) < b.x + brickWidth) {
+                if ((x + ballRadius) > b.x && (x - ballRadius) < b.x + brickWidth) {
 
                     //ボールのy座標がブロックのy座標より大きい
                     //ボールのy座業がブロックのy座業と高さの和より小さい
-                    if ((y - ballRadius) > b.y && (y - ballRadius) < b.y + brickHeight) {
+                    if ((y + ballRadius) > b.y && (y - ballRadius) < b.y + brickHeight) {
 
                         dy = -dy;
                         b.status = 0;
