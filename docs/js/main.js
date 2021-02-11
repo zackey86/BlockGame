@@ -10,16 +10,6 @@ const initY = canvas.height - 30;
 let x = initX;
 let y = initY;
 
-//スコア
-let score = 0;
-let scoreColor = '#0095DD';
-let scoreFont = '16px Arial';
-
-//ライフ
-let lives = 3;
-let livesColor = '#0095DD';
-let livesFont = '16px Arial';
-
 //移動速度
 let dx = 2;
 let dy = -2;
@@ -52,7 +42,7 @@ const brickHeight = 20;
 const brickPadding = 10;
 const brickOffsetTop = 30;
 const brickOffsetLeft = 30;
-const brickColor = '#0095DD';
+const brickColors = ['#0095DD','#fff89','#ff8484','#bf7fff'];
 
 let bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
@@ -65,6 +55,21 @@ for (let c = 0; c < brickColumnCount; c++) {
         };
     }
 }
+
+//レベル初期化
+let gameLevel = 1;
+const levelLimit = brickColors.length;
+
+//スコア
+let score = 0;
+let scoreColor = '#0095DD';
+let scoreFont = '16px Arial';
+const scoreLimit = brickColumnCount * brickRowCount * levelLimit;
+
+//ライフ
+let lives = 3;
+let livesColor = '#0095DD';
+let livesFont = '16px Arial';
 
 //キー操作イベント
 function keyDownHandler(e) {
@@ -156,7 +161,7 @@ function drawBricks() {
 
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                ctx.fillStyle = brickColor;
+                ctx.fillStyle = brickColors[gameLevel - 1];
                 ctx.fill();
                 ctx.closePath();
 
@@ -185,12 +190,13 @@ function collisionDetection() {
                         b.status = 0;
                         score++;
 
-                        //score = brickColumnCount * brickRowCount;
+                        score = brickColumnCount * brickRowCount * gameLevel;
 
-                        if (score == brickColumnCount * brickRowCount) {
+                        if (score == brickColumnCount * brickRowCount * gameLevel) {
 
-                            clearInterval(interval);
-                            alert("You Win");
+                            gameLevel++;
+
+                        }else if(score === scoreLimit){
 
                         }
 
