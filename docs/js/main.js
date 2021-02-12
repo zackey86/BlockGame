@@ -114,7 +114,7 @@ const user = window.navigator.userAgent;
 if(user.match(/(iPhone|iPod|Android.*Mobile)/i)){
 	// スマホ（iPhone・Androidスマホ）の場合の処理を記述
     MOUSE = true;
-    console.log('hi');
+    alert('You are using mobile device');
 }else{
 	// PC・タブレットの場合の処理を記述
 }
