@@ -114,6 +114,7 @@ const user = window.navigator.userAgent;
 if(user.match(/(iPhone|iPod|Android.*Mobile)/i)){
 	// スマホ（iPhone・Androidスマホ）の場合の処理を記述
     MOUSE = true;
+    console.log('hi');
 }else{
 	// PC・タブレットの場合の処理を記述
 }
@@ -466,16 +467,17 @@ drawText(`Press Start`);
 
 //ボタン押下でメイン処理開始
 const startButton = document.getElementById('startButton');
+const cheatButton = document.getElementById('cheat');
 startButton.onclick = function () {
 
     drawText('    READY ?  ');
     setTimeout(draw, 2000);
 
     startButton.remove();
+    cheatButton.remove();
 
 };
 
-const cheatButton = document.getElementById('cheat');
 let IGotPoint = 0;
 cheatButton.onclick = function () {
 
