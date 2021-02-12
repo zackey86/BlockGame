@@ -4,7 +4,7 @@ const canvas = document.getElementById('myCanvas');
 const cell = 16;
 
 canvas.width = cell * 30;
-canvas.height = cell * 20;
+canvas.height = cell * 30;
 
 const ctx = canvas.getContext('2d');
 
@@ -152,7 +152,7 @@ while (dy < 1) {
 
 //パドルコンフィグ
 const paddleHeight = 10;
-const paddleWidth = 75;
+const paddleWidth = 100;
 const paddleWidthHalf = paddleWidth / 2
 const paddleSpeed = 10;
 const paddleColor = '#0095DD';
@@ -375,7 +375,7 @@ function draw() {
     } else if (y + dy > canvas.height - paddleHeight - ballRadius) {
 
         //パドル内におさまっているか
-        if (x > paddleX && x < paddleX + paddleWidth) {
+        if (paddleX < x && x < paddleX + paddleWidth) {
 
             dy = -dy;
 
@@ -444,7 +444,7 @@ function draw() {
     if (score == brickColumnCount * brickRowCount * gameLevel) {
 
         gameLevel++;
-        initialBallSpeed += 2;
+        initialBallSpeed += 1;
         dx = setBallAngle(initialBallSpeed);
         dy = setBallAngle(initialBallSpeed);
 
