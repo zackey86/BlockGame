@@ -10,18 +10,6 @@ const ctx = canvas.getContext('2d');
 
 /*********************************************************************************/
 
-const user = window.navigator.userAgent;
-
-if(user.match(/(iPhone|iPod|Android.*Mobile)/i)){
-	// スマホ（iPhone・Androidスマホ）の場合の処理を記述
-    MOUSE = true;
-    alert('You are using mobile device');
-}else{
-	// PC・タブレットの場合の処理を記述
-}
-
-/*********************************************************************************/
-
 //操作設定
 let MOUSE = false;
 
@@ -38,6 +26,20 @@ let rightPressed = false;
 let leftPressed = false;
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
+
+/*********************************************************************************/
+
+const user = window.navigator.userAgent;
+
+if(user.match(/(iPhone|iPod|Android.*Mobile)/i)){
+	// スマホ（iPhone・Androidスマホ）の場合の処理を記述
+    MOUSE = true;
+    alert('You are using mobile device');
+}else{
+	// PC・タブレットの場合の処理を記述
+}
+
+/********************************************************************************/
 
 if (MOUSE) {
 
