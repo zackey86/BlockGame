@@ -1,11 +1,17 @@
-
+//BLOCK GAME
 const canvas = document.getElementById('myCanvas');
+
+const cell = 16;
+
+canvas.width = cell * 30;
+canvas.height = cell * 20;
+
 const ctx = canvas.getContext('2d');
 
+/*********************************************************************************/
+
 //操作設定
-const MOUSE = true;
-//チート
-let CHEATEMODE = false;
+let MOUSE = false;
 
 //ボール初期位置
 const initX = canvas.width / 2;
@@ -14,25 +20,6 @@ const initY = canvas.height - 30;
 //ボール位置初期化
 let x = initX;
 let y = initY;
-
-//ボール向き乱数
-function setBallAngle(init) {
-    let value = 0;
-    while (value === 0) {
-        value = Math.floor(Math.random() * (init - (-init)) + (-init));
-        console.log(value);
-    }
-    return value;
-};
-
-//移動速度
-const initialBallSpeed = 10;
-let dx = setBallAngle(initialBallSpeed);
-let dy = 0;
-
-while (dy < 1) {
-    dy = setBallAngle(initialBallSpeed);
-}
 
 //キー操作
 let rightPressed = false;
@@ -48,18 +35,125 @@ if (MOUSE) {
     //タッチ操作
     //document.addEventListener('touchstart',touchStartHandler, false);
     document.addEventListener('touchmove', touchMoveHandler, false);
-    
+
 }
+
+//キー操作イベント
+function keyDownHandler(e) {
+
+    if (e.key == 'Right' || e.key == 'ArrowRight') {
+        rightPressed = true;
+    }
+    else if (e.key == 'Left' || e.key == 'ArrowLeft') {
+        leftPressed = true;
+    }
+
+}
+function keyUpHandler(e) {
+
+    if (e.key == 'Right' || e.key == 'ArrowRight') {
+        rightPressed = false;
+    }
+    else if (e.key == 'Left' || e.key == 'ArrowLeft') {
+        leftPressed = false;
+    }
+
+}
+
+//タッチ、マウス処理
+function movePaddle(tx) {
+
+    //ポインタがキャンバスの範囲内であれば操作
+    if (0 < tx && tx < paddleWidth) {
+
+        paddleX = 0;
+
+    } else if (0 < tx && tx < canvas.width) {
+
+        paddleX = tx - paddleWidth;
+
+    } else if (tx < 0) {
+
+        paddleX = 0;
+
+    } else if (canvas.width < tx) {
+
+        paddleX = canvas.width - paddleWidth;
+
+    }
+
+}
+
+//マウス操作イベント
+function mouseMoveHandler(e) {
+
+    const relativeX = e.clientX - canvas.offsetLeft;
+
+    movePaddle(relativeX);
+
+}
+
+//タッチ操作イベント
+function touchStartHandler(e) {
+
+    const relativeX = e.targetTouches[0].clientX - canvas.offsetLeft;
+    movePaddle(relativeX);
+
+}
+function touchMoveHandler(e) {
+
+    const reativeX = e.targetTouches[0].clientX - canvas.offsetLeft;
+    movePaddle(reativeX);
+
+}
+
+/*********************************************************************************/
+
+const user = window.navigator.userAgent;
+
+if(user.match(/(iPhone|iPod|Android.*Mobile)/i)){
+	// スマホ（iPhone・Androidスマホ）の場合の処理を記述
+    MOUSE = true;
+}else{
+	// PC・タブレットの場合の処理を記述
+}
+
+/*********************************************************************************/
 
 //ボールコンフィグ
 const ballRadius = 10;
 const ballColor = '#0095DD';
+let initialBallSpeed = 4;
+
+//ボール向き乱数
+function setBallAngle(init) {
+
+    let max = init + 1;
+    let min = init - 1;
+
+    let value = 0;
+
+    value = Math.floor(Math.random() * (max - min) + min);
+    value = Math.random() < 0.5 ? -value : value;
+    console.log(value);
+
+    return value;
+
+};
+//移動速度
+let dx = setBallAngle(initialBallSpeed);
+let dy = 0;
+//最初は必ず上向きに
+while (dy < 1) {
+    dy = setBallAngle(initialBallSpeed);
+}
+
 
 //パドルコンフィグ
 const paddleHeight = 10;
 const paddleWidth = 75;
 const paddleWidthHalf = paddleWidth / 2
-const paddleSpeed = 7;
+const paddleSpeed = 10;
 const paddleColor = '#0095DD';
 let paddleX = (canvas.width - paddleWidth) / 2;
 
@@ -105,102 +199,51 @@ let livesColor = '#0095DD';
 let livesFont = '16px Arial';
 
 //チートコード
+let CHEATEMODE = false;
 function cheatMove() {
-    if(paddleWidthHalf < x && x + paddleWidthHalf < canvas.width){
+    MOUSE = false;
+    if (paddleWidthHalf < x && x + paddleWidthHalf < canvas.width) {
 
         paddleX = x - paddleWidthHalf;
 
     }
 }
 
-//キー操作イベント
-function keyDownHandler(e) {
-
-    if (e.key == 'Right' || e.key == 'ArrowRight') {
-        rightPressed = true;
-    }
-    else if (e.key == 'Left' || e.key == 'ArrowLeft') {
-        leftPressed = true;
-    }
-
-}
-function keyUpHandler(e) {
-
-    if (e.key == 'Right' || e.key == 'ArrowRight') {
-        rightPressed = false;
-    }
-    else if (e.key == 'Left' || e.key == 'ArrowLeft') {
-        leftPressed = false;
-    }
-
-}
-
-//タッチ、マウス処理
-function movePaddle(x) {
-
-    //ポインタがキャンバスの範囲内であれば操作
-    if (0 < x && x < paddleWidth) {
-
-        paddleX = 0;
-
-    } else if (0 < x && x < canvas.width) {
-
-        paddleX = x - paddleWidth;
-
-    } else if (x < 0) {
-
-        paddleX = 0;
-
-    } else if (canvas.width < x) {
-
-        paddleX = canvas.width - paddleWidth;
-
-    }
-
-}
-
-//マウス操作イベント
-function mouseMoveHandler(e) {
-
-    const relativeX = e.clientX - canvas.offsetLeft;
-
-    movePaddle(relativeX);
-
-}
-
-//タッチ操作イベント
-function touchStartHandler(e) {
-
-    const relativeX = e.targetTouches[0].clientX - canvas.offsetLeft;
-    movePaddle(relativeX);
-
-}
-function touchMoveHandler(e) {
-
-    const reativeX = e.targetTouches[0].clientX - canvas.offsetLeft;
-    movePaddle(reativeX);
-
+//レベル描画
+function drawGameLevel() {
+    ctx.font = '16px Arial';
+    ctx.fillStyle = brickColors[gameLevel - 1];
+    ctx.fillText(`Level: ${gameLevel}`, 8, 20);
 }
 
 //スコア描画
 function drawScore() {
     ctx.font = scoreFont;
     ctx.fillStyle = scoreColor;
-    ctx.fillText(`Score: ${score}`, 8, 20);
+    ctx.fillText(`Score: ${score}`, 80, 20);
 }
 
 //ライフ描画
 function drawLives() {
     ctx.font = livesFont;
     ctx.fillStyle = livesColor;
-    ctx.fillText(`♡: ${lives}`, 80, 20);
+    ctx.fillText(`♡: ${lives}`, canvas.width - 50, 20);
 }
 
 //クリア画面表示
 function drawGameClear() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.font = '50px Arial';
     ctx.fillStyle = 'aquamarine';
     ctx.fillText(`\\\\YOU'RE WINNER//`, 0, (canvas.height / 2) - 50);
+}
+
+//引数として与えられた値をテキストで画面に表示
+function drawText(value) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = 'bold 40px monospace';
+    ctx.fillStyle = 'black';
+    ctx.fillText(value, 50, (canvas.height / 2));
 }
 
 
@@ -308,6 +351,7 @@ function draw() {
     collisionDetection();
     drawBricks();
 
+    drawGameLevel();
     drawScore();
     drawLives();
 
@@ -326,7 +370,7 @@ function draw() {
 
         dy = -dy;
 
-    //下面
+        //下面
     } else if (y + dy > canvas.height - paddleHeight - ballRadius) {
 
         //パドル内におさまっているか
@@ -339,10 +383,27 @@ function draw() {
             lives--;
             if (!lives) {
 
-                console.log('Game Over');
+                //GAME OVER
                 cancelAnimationFrame(req);
 
+                //0.5秒待機して描画変更
+                setTimeout(() => {
+                    
+                    drawText('   YOU LOSE   ');
+
+                }, 500);
+
+                //2秒待機してリロード
+                setTimeout(() => {
+                    
+                    location.reload();
+                    
+                }, 2000);
+
+
             } else {
+
+                cancelAnimationFrame(req);
 
                 //再スタート
                 x = initX;
@@ -350,6 +411,8 @@ function draw() {
                 paddleX = (canvas.width - paddleWidth) / 2;
                 dx = setBallAngle(initialBallSpeed);
                 dy = setBallAngle(-initialBallSpeed);
+
+                setTimeout(draw,500);
 
             }
 
@@ -359,14 +422,18 @@ function draw() {
 
     //パドル移動 範囲指定
     if (rightPressed && paddleX < canvas.width - paddleWidth) {
+
         paddleX += paddleSpeed;
+
     }
     else if (leftPressed && paddleX > 0) {
+
         paddleX -= paddleSpeed;
+
     }
 
-    if(CHEATEMODE){
-        
+    if (CHEATEMODE) {
+
         cheatMove();
 
     }
@@ -376,19 +443,56 @@ function draw() {
     if (score == brickColumnCount * brickRowCount * gameLevel) {
 
         gameLevel++;
-    
-    //カウントアップ後Y座標がブロック描画エリア以下の時に再描画指定
-    }else if(y > bricksArea && score <= brickColumnCount * brickRowCount * (gameLevel - 1)){
+        initialBallSpeed += 2;
+        dx = setBallAngle(initialBallSpeed);
+        dy = setBallAngle(initialBallSpeed);
+
+        //カウントアップ後Y座標がブロック描画エリア以下の時に再描画指定
+    } else if (y > bricksArea && score <= brickColumnCount * brickRowCount * (gameLevel - 1)) {
 
         resetBricks();
 
-    //スコアリミット理論値に達した場合、クリア
-    }else if (score === scoreLimit) {
+        //スコアリミット理論値に達した場合、クリア
+    } else if (score === scoreLimit) {
 
         cancelAnimationFrame(req);
+        drawGameClear();
 
     }
 
 }
 
-draw();
+drawText(`Press Start`);
+
+//ボタン押下でメイン処理開始
+const startButton = document.getElementById('startButton');
+startButton.onclick = function () {
+
+    drawText('    READY ?  ');
+    setTimeout(draw, 2000);
+
+    startButton.remove();
+
+};
+
+const cheatButton = document.getElementById('cheat');
+let IGotPoint = 0;
+cheatButton.onclick = function () {
+
+    CHEATEMODE = true;
+
+    if(IGotPoint === 0){
+
+        drawText('    READY ?  ');
+        setTimeout(draw, 2000);
+        cheatButton.innerText = 'I got point';
+        startButton.remove();
+
+    }else{
+
+        location.reload();
+
+    }
+    IGotPoint++;
+
+}
