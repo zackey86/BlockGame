@@ -24,7 +24,7 @@ function setBallAngle(init) {
 };
 
 //移動速度
-const initialBallSpeed = 5;
+const initialBallSpeed = 10;
 let dx = setBallAngle(initialBallSpeed);
 let dy = 0;
 
@@ -57,29 +57,33 @@ const ballColor = '#0095DD';
 const paddleHeight = 10;
 const paddleWidth = 75;
 const paddleWidthHalf = paddleWidth / 2
-let paddleX = (canvas.width - paddleWidth) / 2;
 const paddleSpeed = 7;
 const paddleColor = '#0095DD';
+let paddleX = (canvas.width - paddleWidth) / 2;
 
 //ブロックコンフィグ
-let brickRowCount = 3;
+let brickRowCount = 4;
 let brickColumnCount = 5;
 const brickWidth = 75;
 const brickHeight = 20;
 const brickPadding = 10;
 const brickOffsetTop = 30;
 const brickOffsetLeft = 30;
-const brickColors = ['#0095DD', '#fff89', '#ff8484', '#bf7fff'];
+const brickColors = ['#0095DD', '#ffff89', '#ff8484', '#bf7fff'];
+const bricksArea = brickRowCount * (brickHeight + (brickPadding * 2));
+console.log(bricksArea);
 
 let bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
     bricks[c] = [];
     for (let r = 0; r < brickRowCount; r++) {
+
         bricks[c][r] = {
             x: 0,
             y: 0,
             status: 1
         };
+
     }
 }
 
@@ -99,7 +103,7 @@ let livesColor = '#0095DD';
 let livesFont = '16px Arial';
 
 //チートコード
-let CHEATEMODE = false;
+let CHEATEMODE = true;
 function cheatMove() {
     if(paddleWidthHalf < x && x + paddleWidthHalf < canvas.width){
 
@@ -190,6 +194,11 @@ function drawLives() {
     ctx.fillStyle = livesColor;
     ctx.fillText(`♡: ${lives}`, 80, 20);
 }
+function drawGameClear() {
+    ctx.font = '100px Arial';
+    ctx.fillStyle = 'aquamarine';
+    ctx.fillText(`\\\\YOU'RE WINNER//`, canvas.width / 2, canvas.height / 2);
+}
 
 
 //ボールの描画
@@ -212,6 +221,20 @@ function drawPaddle() {
     ctx.fill();
     ctx.closePath();
 
+}
+
+//ブロック再描画用設定
+function resetBricks() {
+    for (let c = 0; c < brickColumnCount; c++) {
+        for (let r = 0; r < brickRowCount; r++) {
+
+            let b = bricks[c][r];
+            b.x = 0;
+            b.y = 0;
+            b.status = 1;
+
+        }
+    }
 }
 
 //ブロックの描画
@@ -259,16 +282,6 @@ function collisionDetection() {
                         dy = -dy;
                         b.status = 0;
                         score++;
-
-                        //score = brickColumnCount * brickRowCount * gameLevel;
-
-                        if (score == brickColumnCount * brickRowCount * gameLevel) {
-
-                            gameLevel++;
-
-                        } else if (score === scoreLimit) {
-
-                        }
 
                     }
 
@@ -352,6 +365,24 @@ function draw() {
     if(CHEATEMODE){
         
         cheatMove();
+
+    }
+
+    //ゲーム判定
+    //スコアと現在のレベルの最高スコアを通過時にレベルカウントアップ
+    if (score == brickColumnCount * brickRowCount * gameLevel) {
+
+        gameLevel++;
+    
+    //カウントアップ後Y座標がブロック描画エリア以下の時に再描画指定
+    }else if(y > bricksArea && score <= brickColumnCount * brickRowCount * (gameLevel - 1)){
+
+        resetBricks();
+
+    //スコアリミット理論値に達した場合、クリア
+    }else if (score === scoreLimit) {
+
+        cancelAnimationFrame(req);
 
     }
 
