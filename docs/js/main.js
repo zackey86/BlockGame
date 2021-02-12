@@ -117,6 +117,7 @@ function touchStartHandler(e) {
 
 }
 function touchMoveHandler(e) {
+    e.preventDefault();
 
     const reativeX = e.targetTouches[0].clientX - canvas.offsetLeft;
     movePaddle(reativeX);
