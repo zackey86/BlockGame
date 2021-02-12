@@ -10,6 +10,18 @@ const ctx = canvas.getContext('2d');
 
 /*********************************************************************************/
 
+const user = window.navigator.userAgent;
+
+if(user.match(/(iPhone|iPod|Android.*Mobile)/i)){
+	// スマホ（iPhone・Androidスマホ）の場合の処理を記述
+    MOUSE = true;
+    alert('You are using mobile device');
+}else{
+	// PC・タブレットの場合の処理を記述
+}
+
+/*********************************************************************************/
+
 //操作設定
 let MOUSE = false;
 
@@ -105,18 +117,6 @@ function touchMoveHandler(e) {
     const reativeX = e.targetTouches[0].clientX - canvas.offsetLeft;
     movePaddle(reativeX);
 
-}
-
-/*********************************************************************************/
-
-const user = window.navigator.userAgent;
-
-if(user.match(/(iPhone|iPod|Android.*Mobile)/i)){
-	// スマホ（iPhone・Androidスマホ）の場合の処理を記述
-    MOUSE = true;
-    alert('You are using mobile device');
-}else{
-	// PC・タブレットの場合の処理を記述
 }
 
 /*********************************************************************************/
