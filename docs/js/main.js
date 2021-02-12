@@ -31,26 +31,24 @@ document.addEventListener('keyup', keyUpHandler, false);
 
 const user = window.navigator.userAgent;
 
-if(user.match(/(iPhone|iPod|Android.*Mobile)/i)){
-	// スマホ（iPhone・Androidスマホ）の場合の処理を記述
+if (user.match(/(iPhone|iPod|Android.*Mobile)/i)) {
+    // スマホ（iPhone・Androidスマホ）の場合の処理を記述
     MOUSE = true;
     alert('You are using mobile device');
-}else{
-	// PC・タブレットの場合の処理を記述
+} else {
+    // PC・タブレットの場合の処理を記述
 }
 
 /********************************************************************************/
 
-if (MOUSE) {
+//マウス操作
+document.addEventListener('mousemove', mouseMoveHandler, false);
 
-    //マウス操作
-    document.addEventListener('mousemove', mouseMoveHandler, false);
+//タッチ操作
+//document.addEventListener('touchstart',touchStartHandler, false);
+document.addEventListener('touchmove', touchMoveHandler, false);
 
-    //タッチ操作
-    //document.addEventListener('touchstart',touchStartHandler, false);
-    document.addEventListener('touchmove', touchMoveHandler, false);
 
-}
 
 //キー操作イベント
 function keyDownHandler(e) {
@@ -76,6 +74,10 @@ function keyUpHandler(e) {
 
 //タッチ、マウス処理
 function movePaddle(tx) {
+
+    if(!MOUSE){
+        return;
+    }
 
     //ポインタがキャンバスの範囲内であれば操作
     if (0 < tx && tx < paddleWidth) {
@@ -391,16 +393,16 @@ function draw() {
 
                 //0.5秒待機して描画変更
                 setTimeout(() => {
-                    
+
                     drawText('   YOU LOSE   ');
 
                 }, 500);
 
                 //2秒待機してリロード
                 setTimeout(() => {
-                    
+
                     location.reload();
-                    
+
                 }, 2000);
 
 
@@ -415,7 +417,7 @@ function draw() {
                 dx = setBallAngle(initialBallSpeed);
                 dy = setBallAngle(-initialBallSpeed);
 
-                setTimeout(draw,500);
+                setTimeout(draw, 500);
 
             }
 
@@ -485,14 +487,14 @@ cheatButton.onclick = function () {
 
     CHEATEMODE = true;
 
-    if(IGotPoint === 0){
+    if (IGotPoint === 0) {
 
         drawText('    READY ?  ');
         setTimeout(draw, 2000);
         cheatButton.innerText = 'I got point';
         startButton.remove();
 
-    }else{
+    } else {
 
         location.reload();
 
