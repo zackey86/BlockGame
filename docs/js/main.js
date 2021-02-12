@@ -2,6 +2,9 @@
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
 
+//操作設定
+const MOUSE = false;
+
 //ボール初期位置
 const initX = canvas.width / 2;
 const initY = canvas.height - 30;
@@ -10,9 +13,24 @@ const initY = canvas.height - 30;
 let x = initX;
 let y = initY;
 
+//ボール向き乱数
+function setBallAngle(init) {
+    let value = 0;
+    while (value === 0) {
+        value = Math.floor(Math.random() * (init - (-init)) + (-init));
+        console.log(value);
+    }
+    return value;
+};
+
 //移動速度
-let dx = 2;
-let dy = -2;
+const initialBallSpeed = 5;
+let dx = setBallAngle(initialBallSpeed);
+let dy = 0;
+
+while (dy < 1) {
+    dy = setBallAngle(initialBallSpeed);
+}
 
 //キー操作
 let rightPressed = false;
@@ -20,8 +38,16 @@ let leftPressed = false;
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 
-//マウス操作
-document.addEventListener('mousemove', mouseMoveHandler, false);
+if (MOUSE) {
+
+    //マウス操作
+    document.addEventListener('mousemove', mouseMoveHandler, false);
+
+    //タッチ操作
+    //document.addEventListener('touchstart',touchStartHandler, false);
+    document.addEventListener('touchmove', touchMoveHandler, false);
+    
+}
 
 //ボールコンフィグ
 const ballRadius = 10;
@@ -30,6 +56,7 @@ const ballColor = '#0095DD';
 //パドルコンフィグ
 const paddleHeight = 10;
 const paddleWidth = 75;
+const paddleWidthHalf = paddleWidth / 2
 let paddleX = (canvas.width - paddleWidth) / 2;
 const paddleSpeed = 7;
 const paddleColor = '#0095DD';
@@ -42,7 +69,7 @@ const brickHeight = 20;
 const brickPadding = 10;
 const brickOffsetTop = 30;
 const brickOffsetLeft = 30;
-const brickColors = ['#0095DD','#fff89','#ff8484','#bf7fff'];
+const brickColors = ['#0095DD', '#fff89', '#ff8484', '#bf7fff'];
 
 let bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
@@ -71,6 +98,16 @@ let lives = 3;
 let livesColor = '#0095DD';
 let livesFont = '16px Arial';
 
+//チートコード
+let CHEATEMODE = false;
+function cheatMove() {
+    if(paddleWidthHalf < x && x + paddleWidthHalf < canvas.width){
+
+        paddleX = x - paddleWidthHalf;
+
+    }
+}
+
 //キー操作イベント
 function keyDownHandler(e) {
 
@@ -93,17 +130,50 @@ function keyUpHandler(e) {
 
 }
 
+//タッチ、マウス処理
+function movePaddle(x) {
+
+    //ポインタがキャンバスの範囲内であれば操作
+    if (0 < x && x < paddleWidth) {
+
+        paddleX = 0;
+
+    } else if (0 < x && x < canvas.width) {
+
+        paddleX = x - paddleWidth;
+
+    } else if (x < 0) {
+
+        paddleX = 0;
+
+    } else if (canvas.width < x) {
+
+        paddleX = canvas.width - paddleWidth;
+
+    }
+
+}
+
 //マウス操作イベント
 function mouseMoveHandler(e) {
 
     const relativeX = e.clientX - canvas.offsetLeft;
 
-    //マウスポインタがキャンバスの範囲内であれば操作
-    if (relativeX > 0 && relativeX < canvas.width) {
+    movePaddle(relativeX);
 
-        paddleX = relativeX - paddleWidth / 2;
+}
 
-    }
+//タッチ操作イベント
+function touchStartHandler(e) {
+
+    const relativeX = e.targetTouches[0].clientX - canvas.offsetLeft;
+    movePaddle(relativeX);
+
+}
+function touchMoveHandler(e) {
+
+    const reativeX = e.targetTouches[0].clientX - canvas.offsetLeft;
+    movePaddle(reativeX);
 
 }
 
@@ -118,7 +188,7 @@ function drawScore() {
 function drawLives() {
     ctx.font = livesFont;
     ctx.fillStyle = livesColor;
-    ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
+    ctx.fillText(`♡: ${lives}`, 80, 20);
 }
 
 
@@ -196,7 +266,7 @@ function collisionDetection() {
 
                             gameLevel++;
 
-                        }else if(score === scoreLimit){
+                        } else if (score === scoreLimit) {
 
                         }
 
@@ -213,6 +283,7 @@ function collisionDetection() {
 //canvas要素のメインの処理
 function draw() {
 
+    let req = requestAnimationFrame(draw);
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     drawBall();
@@ -234,11 +305,13 @@ function draw() {
         dx = -dx;
     }
     //y
+    //上面
     if (y + dy < ballRadius) {
 
         dy = -dy;
 
-    } else if (y + dy > canvas.height - ballRadius) {
+    //下面
+    } else if (y + dy > canvas.height - paddleHeight - ballRadius) {
 
         //パドル内におさまっているか
         if (x > paddleX && x < paddleX + paddleWidth) {
@@ -251,15 +324,16 @@ function draw() {
             if (!lives) {
 
                 console.log('Game Over');
-                clearInterval(interval);
+                cancelAnimationFrame(req);
 
             } else {
 
+                //再スタート
                 x = initX;
                 y = initY;
-                dx = 2;
-                dy = -2;
                 paddleX = (canvas.width - paddleWidth) / 2;
+                dx = setBallAngle(initialBallSpeed);
+                dy = setBallAngle(-initialBallSpeed);
 
             }
 
@@ -275,6 +349,12 @@ function draw() {
         paddleX -= paddleSpeed;
     }
 
+    if(CHEATEMODE){
+        
+        cheatMove();
+
+    }
+
 }
 
-const interval = setInterval(draw, 10);
+draw();
