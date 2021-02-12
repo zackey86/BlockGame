@@ -3,7 +3,9 @@ const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
 
 //操作設定
-const MOUSE = false;
+const MOUSE = true;
+//チート
+let CHEATEMODE = false;
 
 //ボール初期位置
 const initX = canvas.width / 2;
@@ -103,7 +105,6 @@ let livesColor = '#0095DD';
 let livesFont = '16px Arial';
 
 //チートコード
-let CHEATEMODE = true;
 function cheatMove() {
     if(paddleWidthHalf < x && x + paddleWidthHalf < canvas.width){
 
@@ -194,10 +195,12 @@ function drawLives() {
     ctx.fillStyle = livesColor;
     ctx.fillText(`♡: ${lives}`, 80, 20);
 }
+
+//クリア画面表示
 function drawGameClear() {
-    ctx.font = '100px Arial';
+    ctx.font = '50px Arial';
     ctx.fillStyle = 'aquamarine';
-    ctx.fillText(`\\\\YOU'RE WINNER//`, canvas.width / 2, canvas.height / 2);
+    ctx.fillText(`\\\\YOU'RE WINNER//`, 0, (canvas.height / 2) - 50);
 }
 
 
