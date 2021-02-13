@@ -1,10 +1,20 @@
 //BLOCK GAME
 const canvas = document.getElementById('myCanvas');
 
-const cell = 16;
+const clientWidth = window.innerWidth;
+const clientHeight = window.innerHeight;
 
-canvas.width = cell * 30;
-canvas.height = cell * 20;
+if (clientWidth < 420) {
+
+    canvas.width = 390;
+    canvas.height = 260;
+
+} else {
+
+    canvas.width = 480;
+    canvas.height = 320;
+
+}
 
 const ctx = canvas.getContext('2d');
 
@@ -75,7 +85,7 @@ function keyUpHandler(e) {
 //タッチ、マウス処理
 function movePaddle(tx) {
 
-    if(!MOUSE){
+    if (!MOUSE) {
         return;
     }
 
