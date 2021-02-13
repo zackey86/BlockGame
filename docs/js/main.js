@@ -4,7 +4,7 @@ const canvas = document.getElementById('myCanvas');
 const cell = 16;
 
 canvas.width = cell * 30;
-canvas.height = cell * 30;
+canvas.height = cell * 20;
 
 const ctx = canvas.getContext('2d');
 
