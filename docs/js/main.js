@@ -6,13 +6,13 @@ const clientHeight = window.innerHeight;
 
 if (clientWidth < 420) {
 
-    canvas.width = 390;
-    canvas.height = 260;
+    canvas.width = 372;
+    canvas.height = canvas.width * 1.2;
 
 } else {
 
     canvas.width = 480;
-    canvas.height = 320;
+    canvas.height = canvas.width * 1.2;
 
 }
 
@@ -156,6 +156,7 @@ function setBallAngle(init) {
     return value;
 
 };
+
 //移動速度
 let dx = setBallAngle(initialBallSpeed);
 let dy = 0;
@@ -180,9 +181,18 @@ const brickWidth = 75;
 const brickHeight = 20;
 const brickPadding = 10;
 const brickOffsetTop = 30;
-const brickOffsetLeft = 30;
+let brickOffsetLeft = 30;
 const brickColors = ['#0095DD', '#ffff89', '#ff8484', '#bf7fff'];
 const bricksArea = brickRowCount * (brickHeight + (brickPadding * 2));
+
+//mobile
+if(clientWidth < 420){
+
+    brickColumnCount = 4;
+    brickOffsetLeft = 25;
+
+}
+
 console.log(bricksArea);
 
 let bricks = [];
