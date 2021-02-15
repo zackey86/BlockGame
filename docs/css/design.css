@@ -8,7 +8,7 @@ body {
     margin: 0;
 }
 
-canvas { 
+canvas {
     background: #eee;
     display:flex;
     margin-top: 30px;
